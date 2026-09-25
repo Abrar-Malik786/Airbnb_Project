@@ -1,8 +1,6 @@
 if (process.env.NODE_ENV != "production") {
   require("dotenv").config();
 }
-
-console.log("DB URL:", process.env.ATLASDB_URL);
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -12,7 +10,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const MongoStore = require("connect-mongo").default;
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -31,10 +29,10 @@ main()
     console.log(err);
   });
 async function main() {
-  // await mongoose.connect(dbUrl);
-  await mongoose.connect(dbUrl, {
-    dbName: "wanderlust",
-  });
+  await mongoose.connect(dbUrl);
+  // await mongoose.connect(dbUrl, {
+  //   dbName: "wanderlust",
+  // });
 }
 
 app.set("view engine", "ejs");
@@ -64,7 +62,7 @@ const store = MongoStore.create({
   touchAfter: 24 * 3600,
   // collectionName: "sessions",
   // ttl: 14 * 24 * 60 * 60, // 14 days
-  autoRemove: "native",
+  // autoRemove: "native",
 });
 
 // const sessionOptions = {
