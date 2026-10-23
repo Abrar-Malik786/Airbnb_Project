@@ -1,7 +1,15 @@
 const Listing = require("../models/listing");
+//
 module.exports.index = async (req, res) => {
+  console.log("INDEX ROUTE STARTED");
+
   const allListings = await Listing.find({});
+
+  console.log("LISTINGS FETCHED");
+
   res.render("listings/index.ejs", { allListings });
+
+  console.log("PAGE RENDERED");
 };
 module.exports.renderNewForm = (req, res) => {
   res.render("listings/new.ejs");
@@ -17,15 +25,53 @@ module.exports.showListing = async (req, res) => {
   }
   res.render("listings/show.ejs", { listing });
 };
-module.exports.createListing = async (req, res) => {
-  let url = req.file.path;
-  let filename = req.file.filename;
+// module.exports.createListing = async (req, res) => {
+//   let url = req.file.path;
+//   let filename = req.file.filename;
 
-  // let {title,description,image,price,location,country} =req.body;
+//   // let {title,description,image,price,location,country} =req.body;
+//   const newListing = new Listing(req.body.listing);
+//   newListing.owner = req.user._id;
+//   newListing.image = { url, filename };
+//   await newListing.save();
+//   req.flash("success", "New Listing Created");
+//   res.redirect("/listings");
+// };
+// chatpt
+// module.exports.createListing = async (req, res) => {
+//   const newListing = new Listing(req.body.listing);
+
+//   newListing.owner = req.user._id;
+
+//   if (req.file) {
+//     let url = req.file.path;
+//     let filename = req.file.filename;
+//     newListing.image = { url, filename };
+//   }
+
+//   await newListing.save();
+
+//   req.flash("success", "New Listing Created");
+//   res.redirect("/listings");
+// };
+module.exports.createListing = async (req, res) => {
+  console.log("FORM DATA:", req.body);
+  console.log("FILE DATA:", req.file);
+
   const newListing = new Listing(req.body.listing);
   newListing.owner = req.user._id;
-  newListing.image = { url, filename };
+
+  if (req.file) {
+    newListing.image = {
+      url: req.file.path,
+      filename: req.file.filename,
+    };
+  }
+
   await newListing.save();
+
+  console.log("LISTING SAVED SUCCESSFULLY");
+
   req.flash("success", "New Listing Created");
   res.redirect("/listings");
 };

@@ -7,13 +7,36 @@ const listingController = require("../controllers/listings.js");
 const multer = require("multer");
 const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage });
+// router
+//   .route("/")
+//   .get(wrapAsync(listingController.index))
+//   .post(
+//     isLoggedIn,
+
+//     upload.single("listing[image]"),
+//     validateListing,
+//     wrapAsync(listingController.createListing)
+//   );
+
 router
   .route("/")
   .get(wrapAsync(listingController.index))
   .post(
     isLoggedIn,
+    (req, res, next) => {
+      console.log("1. POST ROUTE HIT");
+      next();
+    },
     upload.single("listing[image]"),
+    (req, res, next) => {
+      console.log("2. MULTER PASSED");
+      next();
+    },
     validateListing,
+    (req, res, next) => {
+      console.log("3. VALIDATION PASSED");
+      next();
+    },
     wrapAsync(listingController.createListing)
   );
 
